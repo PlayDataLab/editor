@@ -189,23 +189,38 @@ var handleTelemetryModalOptOut = function handleTelemetryModalOptOut() {
       // note that a typo like "falsy" will be treated as true
       simulateScratchDesktop = scratchDesktopMatches[1];
     }
-  } // jaafreitas: This code shouldn't be merged into production branch
-  // Include the (URI encoded) URL to a project file within the URL like
-  // ?project_file=https://example.com/epic-project.sb3
-  // Source code from https://gist.github.com/SheepTester/57b3daa3e227ad3fa085a2501fd331db/revisions?diff=unified
-
-
-  var projectFileMatches = window.location.href.match(/[?&]project_file=([^&]*)&?/);
-  var projectFile = projectFileMatches ? decodeURIComponent(projectFileMatches[1]) : null;
+  }
 
   var onVmInit = function onVmInit(vm) {
-    if (projectFile) {
-      fetch(projectFile).then(function (response) {
-        return response.arrayBuffer();
-      }).then(function (arrayBuffer) {
-        vm.loadProject(arrayBuffer);
-      });
-    }
+    // jaafreitas: This code shouldn't be merged into production branch
+    // Load a project from a URL. Example: ?project_url=/example.sb3
+    var projectLoaded = false; // We need to wait the VM start and the default project to be loaded before
+    // trying to load the url project, otherwiste we can get a mix of both.
+
+    vm.runtime.on('PROJECT_LOADED', function () {
+      if (!projectLoaded) {
+        var projectFileMatches = window.location.href.match(/[?&]project_url=([^&]*)&?/);
+        var projectFile = projectFileMatches ? decodeURIComponent(projectFileMatches[1]) : null;
+
+        if (projectFile) {
+          fetch(projectFile).then(function (response) {
+            if (response.ok) {
+              return response.arrayBuffer();
+            } else {
+              console.error('Failed to fetch project: ' + response.statusText);
+            }
+          }).then(function (arrayBuffer) {
+            if (arrayBuffer) {
+              projectLoaded = true;
+              vm.loadProject(arrayBuffer).catch(function (error) {
+                projectLoaded = false;
+                console.error('Failed to load project. ' + error);
+              });
+            }
+          });
+        }
+      }
+    });
   };
 
   if (false) {}
