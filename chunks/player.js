@@ -13,7 +13,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, ".player_stage-only_3sowo {\r\n    width: calc(480px + 1rem);\r\n}\r\n\r\n.player_editor_pHkoy {\r\n    position: absolute;\r\n    top: 0;\r\n    left: 0;\r\n    height: 100%;\r\n    width: 100%;\r\n}\r\n\r\n.player_stage-only_3sowo * {\r\n    -webkit-box-sizing: border-box;\r\n            box-sizing: border-box;\r\n}\r\n", ""]);
+exports.push([module.i, ".player_stage-only_3sowo {\n    width: calc(480px + 1rem);\n}\n\n.player_editor_pHkoy {\n    position: absolute;\n    top: 0;\n    left: 0;\n    height: 100%;\n    width: 100%;\n}\n\n.player_stage-only_3sowo * {\n    -webkit-box-sizing: border-box;\n            box-sizing: border-box;\n}\n", ""]);
 
 // exports
 exports.locals = {
